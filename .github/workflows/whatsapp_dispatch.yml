@@ -1,0 +1,29 @@
+name: Automated WhatsApp Channel Dispatcher
+
+on:
+  schedule:
+    # 8:00 AM IST is 2:30 AM UTC
+    - cron: '30 2 * * *'
+  workflow_dispatch: # Enables manual testing button
+
+jobs:
+  dispatch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Dependencies
+        run: pip install requests
+
+      - name: Run WhatsApp Agent
+        env:
+          WHATSAPP_API_TOKEN: ${{ secrets.WHATSAPP_API_TOKEN }}
+          WHATSAPP_CHANNEL_ID: ${{ secrets.WHATSAPP_CHANNEL_ID }}
+          WHATSAPP_API_URL: ${{ secrets.WHATSAPP_API_URL }}
+        run: python post_whatsapp.py
